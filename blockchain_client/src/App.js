@@ -56,11 +56,13 @@ function App() {
 		setId({ id: '' });
 	};
 
+	console.log(currentAccount);
 	console.log(transactions);
 	return (
 		<div className="App">
 			<form onSubmit={e => handleSubmit(e)}>
 				<input
+					className="input"
 					type="text"
 					name="id"
 					value={id.id}
@@ -68,33 +70,52 @@ function App() {
 				/>
 			</form>
 			<div>{currentAccount}</div>
-			<div>
-				Current Amount:{' '}
-				{transactions
-					? transactions.reduce((acc, val) => {
-							if (val.recipient === currentAccount) {
-								return acc + val.amount;
-							} else if (val.sender === currentAccount) {
-								return acc - val.amount;
-							} else {
-								return acc;
-							}
-					  }, 0)
-					: ''}
-			</div>
-			<div>
-				Blocks Mined: {recipient ? recipient.length : ''}
-				{recipient
-					? recipient.map(item => {
-							return (
-								<div key={item.index}>
-									<p>Block: {item.index}</p>
-									<p>Time: {item.timestamp}</p>
-									<p>Coins: {item.transactions[0].amount}</p>
-								</div>
-							);
-					  })
-					: ''}
+			<div className="mainCon">
+				<div className="transactions">
+					Current Amount:{' '}
+					{transactions
+						? transactions.reduce((acc, val) => {
+								if (val.recipient === currentAccount) {
+									return acc + val.amount;
+								} else if (val.sender === currentAccount) {
+									return acc - val.amount;
+								} else {
+									return acc;
+								}
+						  }, 0)
+						: ''}
+					{transactions
+						? transactions.map(item => {
+								if (
+									item.sender !== '0' &&
+									(currentAccount === item.sender ||
+										currentAccount === item.recipient)
+								) {
+									return (
+										<div className="eaTransaction">
+											<p>Recipient: {item.recipient}</p>
+											<p>Sender: {item.sender}</p>
+											<p>Amount: {item.amount}</p>
+										</div>
+									);
+								}
+						  })
+						: ''}
+				</div>
+				<div className="minig">
+					Blocks Mined: {recipient ? recipient.length : ''}
+					{recipient
+						? recipient.map(item => {
+								return (
+									<div key={item.index} className="eaBlock">
+										<p>Block: {item.index}</p>
+										<p>Time: {item.timestamp}</p>
+										<p>Coins: {item.transactions[0].amount}</p>
+									</div>
+								);
+						  })
+						: ''}
+				</div>
 			</div>
 		</div>
 	);
