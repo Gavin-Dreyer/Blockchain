@@ -196,12 +196,6 @@ def receive_transaction():
     if 'sender' not in data.json or 'recipient' not in data.json or 'amount' not in data.json:
         return jsonify({"Error": "Missing values"}), 400
 
-    # block_string = json.dumps(blockchain.last_block, sort_keys=True)
-
-    # if blockchain.valid_proof(block_string, data.json['proof']):
-    #     previous_hash = blockchain.hash(blockchain.last_block)
-    #     block = blockchain.new_block(data.json['proof'], previous_hash)
-
     index = blockchain.new_transaction(
         data.json['sender'], data.json['recipient'], data.json['amount'])
 
