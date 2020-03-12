@@ -4,6 +4,7 @@ from time import time
 from uuid import uuid4
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 
 class Blockchain(object):
@@ -121,13 +122,13 @@ class Blockchain(object):
         # print(block_string, 'BLOCK', proof, 'PROOF')
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:6] == "000000"
+        return guess_hash[:5] == "00000"
         # return True or False
 
 
 # Instantiate our Node
 app = Flask(__name__)
-
+CORS(app)
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
 
@@ -154,7 +155,7 @@ def mine():
         previous_hash = blockchain.hash(blockchain.last_block)
         block = blockchain.new_block(data.json['proof'], previous_hash)
 
-        blockchain.new_transaction('0', values['id'], 1)
+        blockchain.new_transaction('0', data.json['id'], 1)
         response = {
             'new_block': block,
             'message': 'New Block Forged'
