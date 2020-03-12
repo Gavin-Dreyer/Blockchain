@@ -112,7 +112,7 @@ class Blockchain(object):
         # print(block_string, 'BLOCK', proof, 'PROOF')
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:3] == "000"
+        return guess_hash[:6] == "000000"
         # return True or False
 
 
@@ -136,20 +136,27 @@ def mine():
 
     data = jsonify(data)
 
-    # print('tet' in data.json)
-    # print('test' not in data.json)
     if 'proof' not in data.json or 'id' not in data.json:
         return jsonify({"Error": "No proof or id provided"}), 400
 
-    previous_hash = blockchain.hash(blockchain.last_block)
-    block = blockchain.new_block(data.json['proof'], previous_hash)
+    block_string = json.dumps(blockchain.last_block, sort_keys=True)
 
-    response = {
-        'new_block': block,
-        'message': 'New Block Forged'
-    }
+    if blockchain.valid_proof(block_string, data.json['proof']):
+        previous_hash = blockchain.hash(blockchain.last_block)
+        block = blockchain.new_block(data.json['proof'], previous_hash)
 
-    return jsonify(response), 201
+        response = {
+            'new_block': block,
+            'message': 'New Block Forged'
+        }
+
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Proof was invalid'
+        }
+
+        return jsonify(response), 400
 
 
 @app.route('/chain', methods=['GET'])
