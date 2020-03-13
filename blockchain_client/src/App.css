@@ -39,6 +39,7 @@
 
 .mainCon {
 	display: flex;
+	justify-content: space-evenly;
 }
 
 .mining {

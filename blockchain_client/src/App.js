@@ -8,7 +8,7 @@ function App() {
 	const [chain, setChain] = useState();
 	const [recipient, setRecipient] = useState();
 	const [currentAccount, setCurrentAccount] = useState();
-	const [transactions, setTransactions] = useState();
+	const [transactions, setTransactions] = useState([]);
 	const [id, setId] = useState({ id: '' });
 
 	useEffect(() => {
@@ -35,11 +35,12 @@ function App() {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-		let arr = [];
 		chain.forEach(item => {
 			if (item.transactions.length > 0) {
-				arr = [...arr, ...item.transactions];
-				// setTransactions([...transactions, ...item.transactions])
+				setTransactions(transactions => [
+					...transactions,
+					...item.transactions
+				]);
 			}
 		});
 		let filteredChain = chain.filter(item => {
@@ -50,13 +51,11 @@ function App() {
 				return item;
 			}
 		});
-		setTransactions(arr);
 		setRecipient(filteredChain);
 		setCurrentAccount(id.id);
 		setId({ id: '' });
 	};
 
-	console.log(currentAccount);
 	console.log(transactions);
 	return (
 		<div className="App">
